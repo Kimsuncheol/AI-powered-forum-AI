@@ -9,6 +9,7 @@ firebase-admin>=6.2.0
 
 # LangChain
 langchain>=0.1.0
+langchain-community>=0.0.10
 langchain-openai>=0.0.5
 tiktoken>=0.5.0
 

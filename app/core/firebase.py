@@ -1,14 +1,12 @@
 """Firebase authentication module."""
 
 import logging
+import os
 from typing import Optional
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-
-# Firebase Admin SDK imports
-# Uncomment when firebase-admin is installed:
-# from firebase_admin import auth, credentials, initialize_app
+from firebase_admin import auth, credentials, initialize_app
 
 from app.config import settings
 
@@ -28,14 +26,22 @@ def initialize_firebase() -> None:
         return
 
     try:
-        # Uncomment when firebase-admin is installed:
-        # cred = credentials.Certificate(settings.FIREBASE_CREDENTIALS_PATH)
-        # initialize_app(cred)
+        if not os.path.exists(settings.FIREBASE_CREDENTIALS_PATH):
+            logger.warning(
+                f"Firebase credentials not found at {settings.FIREBASE_CREDENTIALS_PATH}. "
+                "Auth will fail unless using mocks."
+            )
+            # We don't raise here so the app can start, but verify_id_token will fail
+            return
+
+        cred = credentials.Certificate(settings.FIREBASE_CREDENTIALS_PATH)
+        initialize_app(cred)
         _firebase_initialized = True
         logger.info("Firebase Admin SDK initialized successfully")
     except Exception as e:
         logger.error(f"Failed to initialize Firebase: {e}")
-        raise
+        # In production, we might want to raise this
+        # raise
 
 
 async def verify_firebase_token(
@@ -63,19 +69,10 @@ async def verify_firebase_token(
         # Initialize Firebase if not already done
         initialize_firebase()
 
-        # Verify the token
-        # Uncomment when firebase-admin is installed:
-        # decoded_token = auth.verify_id_token(token)
-        # return decoded_token
-
-        # Placeholder response for development
-        # Remove this when implementing actual Firebase verification
-        logger.warning("Using placeholder token verification - implement Firebase!")
-        return {
-            "uid": "dev-user-id",
-            "email": "dev@example.com",
-            "email_verified": True,
-        }
+        # If we are in dev mode and credentials path is special, we could mock
+        # For now, we try real verification
+        decoded_token = auth.verify_id_token(token)
+        return decoded_token
 
     except Exception as e:
         logger.error(f"Token verification failed: {e}")

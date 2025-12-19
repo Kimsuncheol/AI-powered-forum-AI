@@ -21,6 +21,9 @@ class Settings(BaseSettings):
     # Database (future)
     DATABASE_URL: str = ""
 
+    # AI Rate Limiting
+    AI_DAILY_RATE_LIMIT: int = 50
+
     class Config:
         env_file = ".env"
         case_sensitive = True

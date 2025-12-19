@@ -1,7 +1,7 @@
 """Question-answering chain using LangChain."""
 
-from langchain.chains import LLMChain
-from langchain.prompts import PromptTemplate
+from langchain_classic.chains import LLMChain
+from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 
 from app.ai.prompts.templates import QA_TEMPLATE
