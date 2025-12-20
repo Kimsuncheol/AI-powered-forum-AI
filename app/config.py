@@ -21,6 +21,16 @@ class Settings(BaseSettings):
     # Database (future)
     DATABASE_URL: str = ""
 
+    # Google AI (Nano Banana Pro)
+    GOOGLE_API_KEY: str = ""
+    GOOGLE_IMAGE_MODEL: str = "gemini-1.5-pro"  # Default model alias or ID
+
+    # Google Veo 3.1 Video Generation
+    GOOGLE_VIDEO_MODEL: str = "veo-3.1-generate-preview"
+
+    # Google Lyria Music Generation
+    GOOGLE_MUSIC_MODEL: str = "models/lyria-realtime-exp"
+
     # AI Rate Limiting
     AI_DAILY_RATE_LIMIT: int = 50
 
